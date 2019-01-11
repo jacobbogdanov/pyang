@@ -352,7 +352,19 @@ def emit_arg(keywordstr, stmt, fd, indent, indentstep, max_line_len, line_len):
             fd.write(' "' + arg + '"')
             return False
     else:
+        need_nl = False
         if stmt.keyword in _force_newline_arg:
+            need_nl = True
+        elif len(keywordstr) > 8:
+            # Heuristics: multi-line after a "long" keyword looks better
+            # than after a "short" keyword (compare 'when' and 'error-message')
+            need_nl = True
+        else:
+            for line in lines:
+                if need_new_line(max_line_len, line_len + 1, line):
+                    need_nl = True
+                    break
+        if need_nl:
             fd.write('\n' + indent + indentstep)
             prefix = indent + indentstep
         else:
