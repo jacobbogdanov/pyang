@@ -30,6 +30,10 @@ class YANGPlugin(plugin.PyangPlugin):
                                  type="int",
                                  dest="yang_line_length",
                                  help="Maximum line length"),
+            optparse.make_option("--yang-indentation-width",
+                                 dest="yang_indentation_width",
+                                 type="int",
+                                 default=2),
             ]
         g = optparser.add_option_group("YANG output specific options")
         g.add_options(optlist)
@@ -46,7 +50,8 @@ class YANGPlugin(plugin.PyangPlugin):
         emit_yang(ctx, module, fd)
 
 def emit_yang(ctx, module, fd):
-    emit_stmt(ctx, module, fd, 0, None, None, False, '', '  ')
+    indentstep = ' ' * ctx.opts.yang_indentation_width
+    emit_stmt(ctx, module, fd, 0, None, None, False, '', indentstep)
 
 # always add newline between keyword and argument
 _force_newline_arg = ('description', 'reference', 'contact', 'organization')
